@@ -10,7 +10,7 @@ class Dish {
     }
 
     func description() -> String {
-        "\(name) costs $\(String(format: \"%.2f\", price))"
+        "\(name) costs $\(String(format: "%.2f", price))"
     }
 }
 

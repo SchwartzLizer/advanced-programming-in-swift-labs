@@ -16,7 +16,7 @@ final class MainDish: MenuItemProtocol {
     }
 
     func itemDescription() -> String {
-        "\(name): $\(String(format: \"%.2f\", price))"
+        "\(name): $\(String(format: "%.2f", price))"
     }
 }
 
