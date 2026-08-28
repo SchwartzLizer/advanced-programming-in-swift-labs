@@ -1,0 +1,45 @@
+name: LittleLemonMenu
+options:
+  deploymentTarget:
+    iOS: "16.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+targets:
+  LittleLemonMenu:
+    type: application
+    platform: iOS
+    sources:
+      - path: FinalProject/LittleLemonMenu
+        excludes:
+          - Resources
+    resources:
+      - path: FinalProject/LittleLemonMenu/Resources
+    info:
+      path: FinalProject/LittleLemonMenu/Info.plist
+      properties:
+        CFBundleDisplayName: Little Lemon
+        UILaunchScreen: {}
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.schwartzlizer.LittleLemonMenu
+        TARGETED_DEVICE_FAMILY: "1,2"
+  LittleLemonMenuTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: FinalProject/LittleLemonMenuTests
+    dependencies:
+      - target: LittleLemonMenu
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.schwartzlizer.LittleLemonMenuTests
+schemes:
+  LittleLemonMenu:
+    build:
+      targets:
+        LittleLemonMenu: all
+        LittleLemonMenuTests: [test]
+    test:
+      targets:
+        - LittleLemonMenuTests
