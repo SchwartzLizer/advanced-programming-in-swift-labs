@@ -22,6 +22,7 @@ Quizzes, peer-review submissions, Coursera progress changes, and any credentials
 ```text
 README.md
 Package.swift
+project.yml
 Labs/
   Module-1/
     01-enums/main.swift
@@ -43,18 +44,24 @@ FinalProject/LittleLemonMenu/
   MenuItemsOptionView.swift
   MenuItemDetailsView.swift
   LittleLemonMenuApp.swift
+  Resources/Assets.xcassets/
+    LittleLemonLogo.imageset/
+      Contents.json
+      LittleLemonLogo.png
+FinalProject/LittleLemonMenuTests/
+  MenuItemTests.swift
 Tests/LabSolutionsTests/
   LabSolutionsTests.swift
 .github/workflows/swift.yml
 ```
 
-The standalone `main.swift` files mirror the Coursera exercise boundaries. Shared deterministic logic lives in a Swift Package target so it can be tested and reused without copying implementation across tests. The final project keeps SwiftUI presentation files separate from model/view-model state.
+The standalone `main.swift` files mirror the Coursera exercise boundaries. Module 1–3 deterministic logic lives in a Swift Package target. The final project is a separate iOS application generated from `project.yml` with XcodeGen; its unit-test target compiles and tests the same model/view-model sources used by the app.
 
 ## Architecture
 
 **MVVM — fit.** The final project is a small SwiftUI feature with screen-level state and no external effect orchestration. `MenuViewModel` owns menu collections and filtering/sorting state; views render state and send user actions. The labs remain intentionally direct examples rather than being forced into app-wide abstractions. This follows the Swift architecture selection guide’s default SwiftUI recommendation.
 
-The menu model uses Foundation `UUID`, `MenuCategory`, and `Ingredient` enums. A single `MenuItem` reference type conforms to `MenuItemProtocol` and `Identifiable`, resolving the Coursera task’s contradictory duplicate `price` requirements as `price: Double { get set }` plus `priceInCents: Int { get set }`. This choice is documented in the README and tested.
+The menu model uses Foundation `UUID`, `MenuCategory`, and `Ingredient` enums. A single `MenuItem` reference type conforms to `MenuItemProtocol` and `Identifiable`. The Coursera task’s contradictory duplicate `price` bullets are resolved as one `price: Double` property. The checkout lab remains independent and stores monetary values as integer cents.
 
 ## Data flow and behavior
 
@@ -68,13 +75,14 @@ The menu model uses Foundation `UUID`, `MenuCategory`, and `Ingredient` enums. A
 
 ## Testing and verification
 
-- Write tests before production implementations for package logic and menu behavior. On this Windows host, local Swift execution is unavailable; the red/green evidence will be recorded by the macOS CI workflow after the repository is pushed.
-- GitHub Actions runs `swift test` on `macos-latest` and syntax-checks each standalone lab source with the Swift compiler available on that runner.
+- Create the GitHub repository and macOS workflow before production behavior. Push test-only commits first and record the expected RED run; add implementation commits afterward and record GREEN.
+- GitHub Actions installs XcodeGen, generates `LittleLemonMenu.xcodeproj`, runs `swift test`, compiles standalone lab sources, and runs `xcodebuild test` against an available iOS Simulator.
+- XcodeGen is a build-time development tool only. The app has no third-party runtime dependencies.
 - Before any completion claim, inspect `git diff`, run all locally available structural checks, and verify the live GitHub repository plus workflow result through BrowserOS neo.
 
 ## Risks and explicit limitations
 
-- SwiftUI cannot be compiled on Windows without Xcode. The source will be complete, but local UI runtime verification is not possible in this workspace.
-- The Coursera final-project task says `price` once as `Double` and later as `Int`; the separate `priceInCents` property preserves both concepts without an impossible duplicate Swift declaration.
+- SwiftUI cannot be compiled on Windows without Xcode. Runtime verification therefore comes from macOS GitHub Actions and its iOS Simulator.
+- The Coursera final-project task says `price` once as `Double` and later as `Int`; the implementation keeps the coherent `Double` declaration and documents the source ambiguity.
 - Coursera’s final solution page is locked in the current account, so implementation follows the accessible exercise requirements and expected outputs.
-
+- The repository uses an original generated lemon-and-leaves logo instead of copying the course logo.
