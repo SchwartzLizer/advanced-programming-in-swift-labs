@@ -10,11 +10,11 @@ final class MenuViewModel: ObservableObject {
     init(
         selectedCategories: Set<MenuCategory> = Set(MenuCategory.allCases),
         sortOption: MenuSortOption = .mostPopular,
-        menuItems: [MenuItem] = MenuViewModel.makeMenuItems()
+        menuItems: [MenuItem]? = nil
     ) {
         self.selectedCategories = selectedCategories
         self.sortOption = sortOption
-        self.menuItems = menuItems
+        self.menuItems = menuItems ?? Self.makeMenuItems()
     }
 
     var filteredAndSortedItems: [MenuItem] {
